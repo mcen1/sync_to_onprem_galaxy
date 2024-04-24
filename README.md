@@ -12,6 +12,6 @@ Stand up a galaxy instance on your own on-prem infrastructure via https://github
 
 Edit https://github.com/mcen1/sync_to_onprem_galaxy/blob/main/vars/all.yml and fill out the relevant information like your on-prem Galaxy hostname and what you want to name your repository.
 
-Once that's settled, edit https://github.com/mcen1/sync_to_onprem_galaxy/blob/main/vars/collections.yml#L1-L17 and add your desired collections to this list. 
+Once that's settled, edit https://github.com/mcen1/sync_to_onprem_galaxy/blob/main/vars/collections.yml#L1-L19 and add your desired collections to this list. 
 
-If you have weird collections that aren't on the public Galaxy but Github, you can add them to https://github.com/mcen1/sync_to_onprem_galaxy/blob/main/vars/collections.yml#L18-L19
+If you have weird collections that aren't on the public Galaxy but Github, you can add them to https://github.com/mcen1/sync_to_onprem_galaxy/blob/main/vars/collections.yml#L20-L21
