@@ -1,7 +1,10 @@
 galaxy_username: "admin"
+# hostname of your on-prem galaxy instance
 galaxy_host: "galaxy.local"
+# name of the repository to be created to host your collections
 galaxy_repository:
   name: "mirror"
+# remote instance, not really necessary to change this
 galaxy_remote:
   name: "galaxypublicremote"
   url: "https://galaxy.ansible.com/api/"
