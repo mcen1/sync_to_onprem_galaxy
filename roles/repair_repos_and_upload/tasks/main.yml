@@ -1,0 +1,25 @@
+- name: "Get list of tar files"
+  shell: " /bin/rm repaired/{{ repo_tarball }}; "
+  ignore_errors: True
+- name: "Compress directory repaired/{{ repo_directory }}/. into repaired/{{ repo_tarball }}"
+  community.general.archive:
+    path: "repaired/{{ repo_directory }}/."
+    dest: "repaired/{{ repo_tarball }}"
+
+- name: Create namespace
+  include_role:
+    name: "create_galaxy_namespace"
+  vars:
+    galaxy_namespace_name: "{{ repo_tarball.split('-')[0] }}"
+
+- name: "Upload {{ repo_tarball }} to mirror"
+  shell: "ansible-galaxy collection publish 'repaired/{{ repo_tarball }}' -c --token {{ galaxy_api_key }} --server http://{{galaxy_host}}/api/galaxy/content/{{galaxy_repository.name}}"
+  register: collectionpublish
+  failed_when: "'already exists with a different artifact' not in collectionpublish.stderr and collectionpublish.stderr!=0"
+  ignore_errors: True
+
+#- name: show
+#  debug:
+#    msg: "{{ collectionpublish }}"
+
+

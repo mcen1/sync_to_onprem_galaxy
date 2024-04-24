@@ -1,0 +1,24 @@
+- name: "Download collections"
+  shell: "ansible-galaxy collection download {{ item }}"
+  loop: "{{ collections_list }}"
+
+- name: "Get list of tar files"
+  shell: "cd collections/; ls *.tar.gz"
+  register: all_tars
+
+- name: Show all tarballs downloaded
+  debug:
+    msg: "{{ all_tars.stdout_lines }}"
+
+- name: Loop through and create namespaces
+  include_role:
+    name: "create_galaxy_namespace"
+  vars:
+    galaxy_namespace_name: "{{ item.split('-')[0] }}"
+  loop: "{{ all_tars.stdout_lines }}"
+
+- name: "Upload collections to mirror"
+  shell: "ansible-galaxy collection publish collections/{{ item }} -c --api-key {{ galaxy_api_key }} --server http://{{ galaxy_host }}/api/galaxy/content/{{ galaxy_repository.name }}/"
+  loop: "{{ all_tars.stdout_lines }}"
+
+

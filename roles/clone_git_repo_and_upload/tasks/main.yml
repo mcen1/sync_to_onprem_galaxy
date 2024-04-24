@@ -1,0 +1,23 @@
+- name: "Git checkout {{ repo_url }}"
+  ansible.builtin.git:
+    repo: "{{ repo_url }}"
+    dest: "{{ repo_destination }}/{{ repo_name }}/"
+    version: "{{ repo_version }}"
+
+- name: "Set tar name"
+  set_fact:
+    assembled_tar_name: "{{ repo_name|replace('.','-') }}-{{ repo_version }}.tar.gz"
+- name: "Create {{ repo_destination }}/{{ repo_name }}.tar.gz"
+  community.general.archive:
+    path: "{{ repo_destination }}/{{ repo_name }}/"
+    dest: "{{ repo_destination }}/{{ assembled_tar_name }}"
+
+- name: Create namespace
+  include_role:
+    name: "create_galaxy_namespace"
+  vars:
+    galaxy_namespace_name: "{{ assembled_tar_name.split('-')[0] }}"
+
+- name: "Upload {{ repo_destination }}/{{ repo_name }}.tar.gz to mirror"
+  shell: "ansible-galaxy collection publish '{{ repo_destination }}/{{ assembled_tar_name }}' -c --token {{ galaxy_api_key }} --server http://{{galaxy_host}}/api/galaxy/content/{{galaxy_repository.name}}"
+

@@ -1,0 +1,7 @@
+galaxy_username: "admin"
+galaxy_host: "galaxy.local"
+galaxy_repository:
+  name: "mirror"
+galaxy_remote:
+  name: "galaxypublicremote"
+  url: "https://galaxy.ansible.com/api/"

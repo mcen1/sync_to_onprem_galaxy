@@ -1,0 +1,14 @@
+- name: "Download from {{ tar_url }}"
+  ansible.builtin.get_url:
+    url: "{{ tar_url }}"
+    dest: "downloaded/"
+
+- name: Loop through and create namespaces
+  include_role:
+    name: "create_galaxy_namespace"
+  vars:
+    galaxy_namespace_name: "{{ tar_url.split('/')[-1].split('-')[0] }}"
+
+- name: "Upload {{tar_url.split('/')[-1]}} to mirror"
+  shell: "ansible-galaxy collection publish downloaded/{{tar_url.split('/')[-1]}} -c --api-key {{ galaxy_api_key }} --server http://{{ galaxy_host }}/api/galaxy/content/{{ galaxy_repository.name }}/"
+

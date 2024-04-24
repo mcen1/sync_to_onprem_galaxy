@@ -1,0 +1,14 @@
+- name: "Add Automation Hub Namespace {{ galaxy_namespace_name }}"
+  infra.ah_configuration.ah_namespace:
+    name:             "{{ galaxy_namespace_name }}"
+    new_name:         ""
+    description:      ""
+    company:          ""
+    avatar_url:       ""
+    resources:        ""
+    links:            []
+    groups:           []
+    state:            "present"
+    ah_host:          "{{ galaxy_host }}"
+    ah_token:      "{{ galaxy_api_key }}"
+    validate_certs: False

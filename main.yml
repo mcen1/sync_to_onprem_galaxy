@@ -1,0 +1,69 @@
+---
+- name: Sync repository to Automation Hub
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  collections:
+    - galaxy.galaxy
+  vars_files:
+    - "vars/collections.yml"
+    - "vars/githubrepos.yml"
+    - "vars/all.yml"
+    - "vars/secret.yml"
+  tasks:
+    - name: "Create remote"
+      infra.ah_configuration.collection_remote:
+        ah_host: "{{ galaxy_host }}"
+        ah_verify_ssl: False
+        ah_username: "admin"
+        ah_password: "IFvtcub7aPBP5JSFbyzgPxD6olTOgETJ"
+        name: "{{ galaxy_remote.name }}"
+        url: "{{ galaxy_remote.url }}"
+        download_concurrency: 5
+        sync_dependencies: True
+        signed_only: False
+        rate_limit: 4
+    - name: "Create repository"
+      infra.ah_configuration.collection_repository:
+        ah_host: "{{ galaxy_host }}"
+        ah_username: "admin"
+        ah_password: "IFvtcub7aPBP5JSFbyzgPxD6olTOgETJ"
+        ah_verify_ssl: False
+        remote: "{{ galaxy_remote.name }}"
+        name: "{{ galaxy_repository.name }}"
+        state: "present"
+        retain_repo_versions: 0
+        private: False
+        distribution: 
+          name: "{{ galaxy_repository.name }}"
+          state: present
+    - name: "Repair and upload repositories that need it"
+      include_role:
+        name: "repair_repos_and_upload"
+      vars:
+        repo_directory: "{{ item.directory }}"
+        repo_tarball: "{{ item.tarball }}"
+      loop: "{{ repaired_repos }}"
+    - name: "Download tarball urls"
+      include_role:
+        name: "download_and_upload"
+      vars:
+        tar_url: "{{ item.tar_url }}"
+      loop: "{{ tarball_urls }}"
+      when: tarball_urls is defined and tarball_urls|length > 0
+
+    - name: "Mirror github repositories"
+      include_role:
+        name: "clone_git_repo_and_upload"
+      vars:
+        repo_version: "{{ item.version|default('main') }}"
+        repo_name: "{{ item.name }}"
+        repo_url: "{{ item.url }}"
+        repo_destination: "gitrepos/"
+      loop: "{{ github_repositories }}"
+      when: github_repositories is defined and github_repositories|length > 0
+    - name: "Main collection mirror role"
+      include_role:
+        name: "clone_collections_and_upload"
+
+

@@ -1,0 +1,5 @@
+collections:
+  - name: "galaxy.galaxy"
+    source: https://github.com/ansible/galaxy_collection
+    type: git
+    version: 2.0.6
