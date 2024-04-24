@@ -1,3 +1,4 @@
+# which collections from galaxy.ansible.com we wish to synchronize to our on-prem mirror
 collections_list:
   - "community.general"
   - "community.dns"
@@ -15,5 +16,6 @@ collections_list:
   - "community.vmware"
   - "kubernetes.core"
   - "community.aws"
+# weird collections only available in github
 tarball_urls:
   - tar_url: "https://github.com/ansible/galaxy_collection/releases/download/2.0.6/infra-ah_configuration-2.0.6.tar.gz"
